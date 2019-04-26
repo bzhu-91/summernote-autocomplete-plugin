@@ -29,7 +29,7 @@
 			self.autoCompleteMode = false;
 			self.selectedSuggestion = 0;
 			self.handlers = {}
-			self.triggerSymbol = "#"; // the special symbol to enter the suggestion mode
+			self.triggerSymbol = "#";
 			self.getSuggestions = function () {return null;} // place holder function
 			self.events = {
 				'summernote.keyup': function (we, e) {
@@ -87,7 +87,7 @@
 								self.insertSuggestion();
 								self.exitAutoCompleteMode();
 								return;
-							case self.triggerSymbol: // input # when user hit # twice
+							case self.triggerSymbol:
 								self.exitAutoCompleteMode();
 								return;
 						}
@@ -96,7 +96,6 @@
 			};
 
 			// create suggestion view
-      // create tmp container for keywords
 			self.initialize = function () {
 				self.$dropdown = $("<div></div>")
 					.css({
@@ -138,11 +137,8 @@
 				if ("insertSuggestion" in self.handlers) {
 					for (let i = 0; i < self.handlers.insertSuggestion.length; i++) {
 						const func = self.handlers.insertSuggestion[i];
-						doInsertion = doInsertion && func(suggestion) !== false; // if the event hanlder returns false, do not insert
+						doInsertion = doInsertion && func(suggestion) !== false;
 					}
-					self.handlers.insertSuggestion.forEach(function(func){
-						func(suggestion);
-					});
 				} 
 				if (doInsertion) {
 					var node = document.createElement("span");
