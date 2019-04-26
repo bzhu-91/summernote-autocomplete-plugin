@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Test</title>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+	<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script> 
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script> 
+	<script type="text/javascript" src="./summernote.plugin.autocomplete.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" >
+	<link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" >
+
+</head>
+<body style="padding: 20px">
+	<textarea class="summernote"></textarea>
+	<script>
+		const dictionary = {"Alpha":"Α","alpha":"α","Beta":"Β","beta":"β","Gamma":"Γ","gamma":"γ","Delta":"Δ","delta":"δ","Epsilon":"Ε","epsilon":"ε","Zeta":"Ζ","zeta":"ζ","Eta":"Η","eta":"η","Theta":"Θ","theta":"θ","Iota":"Ι","iota":"ι","Kappa":"Κ","kappa":"κ","Lambda":"Λ","lambda":"λ","Mu":"Μ","mu":"μ","Nu":"Ν","nu":"ν","Xi":"Ξ","xi":"ξ","Omicron":"Ο","omicron":"ο","Pi":"Π","pi":"π","Rho":"Ρ","rho":"ρ","Sigma":"Σ","sigma":"σ,ς *","Tau":"Τ","tau":"τ","Upsilon":"Υ","upsilon":"υ","Phi":"Φ","phi":"φ","Chi":"Χ","chi":"χ","Psi":"Ψ","psi":"ψ","Omega":"Ω","omega":"ω"};
+		var search = function (keyword) {
+			var result = [];
+			for(key in dictionary) {
+				if (key.match(new RegExp(keyword))) {
+					result.push(dictionary[key]);
+				}
+			}
+			return result;
+		}
+		var editor = $(".summernote").summernote();
+		editor.summernote('autoComplete.setDataSrc', function (keyword, callback) {
+			callback(search(keyword));
+		});
+		editor.summernote('autoComplete.setTriggerSymbol', '#');
+		editor.summernote('autoComplete.on', 'insertSuggestion', function(suggestion) {
+			console.log("The uesr has get the suggestion:" + suggestion);
+		})
+	</script>
+</body>
+</html>
