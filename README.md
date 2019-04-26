@@ -1,6 +1,8 @@
 # summernote-autocomplete-plugin
 A autocomplete plugin for summernote
 
+![img](https://github.com/bzhu-91/summernote-autocomplete-plugin/blob/master/demo.gif?raw=true)
+
 Usage example:
 ```
 var editor = $(".summernote").summernote();
