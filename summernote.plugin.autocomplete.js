@@ -29,7 +29,7 @@
 			self.autoCompleteMode = false;
 			self.selectedSuggestion = 0;
 			self.handlers = {}
-			self.triggerSymbol self.triggerSymbol;
+			self.triggerSymbol = "#";
 			self.getSuggestions = function () {return null;} // place holder function
 			self.events = {
 				'summernote.keyup': function (we, e) {
