@@ -29,7 +29,7 @@
 			self.autoCompleteMode = false;
 			self.selectedSuggestion = 0;
 			self.handlers = {}
-			self.triggerSymbol = "#";
+			self.triggerSymbol self.triggerSymbol;
 			self.getSuggestions = function () {return null;} // place holder function
 			self.events = {
 				'summernote.keyup': function (we, e) {
@@ -120,7 +120,7 @@
 			self.enterAutoCompleteMode = function (e) {
 				e.preventDefault();
 				self.autoCompleteMode = true;
-				self.$tmpContainer.html("#");
+				self.$tmpContainer.html(self.triggerSymbol);
 				context.invoke("insertNode", self.$tmpContainer[0]);
 			}
 			// exit mode
