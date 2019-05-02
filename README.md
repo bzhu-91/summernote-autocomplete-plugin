@@ -14,8 +14,8 @@ editor.summernote('autoComplete.setDataSrc', function (keyword, callback) {
 			callback(data);
 		}
 	})
-});
-editor.summernote('autoComplete.setTriggerSymbol', '#');
+}, "#");
+
 editor.summernote('autoComplete.on', 'insertSuggestion', function(suggestion) {
   alert("The uesr has get the suggestion:" + suggestion);
 })
