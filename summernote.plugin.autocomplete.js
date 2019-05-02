@@ -29,8 +29,8 @@
 			self.autoCompleteMode = false;
 			self.selectedSuggestion = 0;
 			self.handlers = {}
-			self.triggerSymbol = "#";
-			self.getSuggestions = function () {return null;} // place holder function
+			self.triggerSymbol = null;
+			self.getSuggestions = {}
 			self.events = {
 				'summernote.keyup': function (we, e) {
 					if (self.autoCompleteMode) {
@@ -60,7 +60,8 @@
 								return;
 						}
 						if (keyword.length > 1) {
-							self.getSuggestions(self.$tmpContainer.text().substr(1), function(suggestions){
+							var dataSrc = self.getSuggestions[self.triggerSymbol];
+							dataSrc(self.$tmpContainer.text().substr(1), function(suggestions){
 								self.visualizeSuggestions(suggestions);
 								self.highlightSuggestion(0);
 								try {
@@ -74,7 +75,8 @@
 					}
 				},
 				'summernote.keydown': function (we, e) {
-					if (e.key == self.triggerSymbol && !self.autoCompleteMode) {
+					if (e.key in self.getSuggestions && !self.autoCompleteMode) {
+						self.triggerSymbol = e.key;
 						// # key entered
 						self.enterAutoCompleteMode(e);
 					} else if (self.autoCompleteMode) {
@@ -100,7 +102,8 @@
 				self.$dropdown = $("<div></div>")
 					.css({
 						background: "white", 
-						position: "absolute", 
+						position: "absolute",
+						zIndex: 1000,
 						display: "block", 
 						border: "1px solid #999", 
 						borderRadius: "5px", 
@@ -129,6 +132,21 @@
 				self.$tmpContainer.html("").remove();
 				self.$dropdown.hide();
 			}
+			// from https://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
+			self.isDomElement = function (obj) {
+				try {
+					//Using W3 DOM2 (works for FF, Opera and Chrome)
+					return obj instanceof HTMLElement;
+				  }
+				  catch(e){
+					//Browsers not supporting W3 DOM2 don't have HTMLElement and
+					//an exception is thrown and we end up here. Testing some
+					//properties that all elements have (works on IE7)
+					return (typeof obj==="object") &&
+					  (obj.nodeType===1) && (typeof obj.style === "object") &&
+					  (typeof obj.ownerDocument ==="object");
+				  }
+			}
 			// insert the suggestion
 			// invoke the insertSuggestion event
 			self.insertSuggestion = function () {
@@ -137,13 +155,22 @@
 				if ("insertSuggestion" in self.handlers) {
 					for (let i = 0; i < self.handlers.insertSuggestion.length; i++) {
 						const func = self.handlers.insertSuggestion[i];
-						doInsertion = doInsertion && func(suggestion) !== false;
+						doInsertion = doInsertion && func(suggestion, self.triggerSymbol) !== false;
 					}
 				} 
 				if (doInsertion) {
-					var node = document.createElement("span");
-					node.innerHTML = self.try(suggestion, ["content", "label", "text"]) || suggestion;
-					context.invoke("insertNode", node);
+					var content = self.try(suggestion, ["content", "label", "text"]) || suggestion;
+					if (content instanceof jQuery) {
+						content.each(function(idx, el){
+							context.invoke("insertNode", el);
+						})
+					} else if (self.isDomElement(content)) {
+						context.invoke("insertNode", content);
+					} else {
+						var node = document.createElement("span");
+						node.innerHTML = content;
+						context.invoke("insertNode", node);
+					} 
 				}
 			}
 			// highlightsuggestion
@@ -180,13 +207,13 @@
 			// set the data source
 			// func has two params: key, callback
 			// should call callback with the list
-			self.setDataSrc = function (func) {
+			self.setDataSrc = function (func, trigger) {
 				// keyword, callback
-				self.getSuggestions = func;
-			}
-			// set the trigger symbol, by default #
-			self.setTriggerSymbol = function (s) {
-				self.triggerSymbol = s;
+				if (trigger && trigger.length == 1) {
+					self.getSuggestions[trigger] = func;
+				} else throw {
+					message: "trigger symbol is in wrong format"
+				}
 			}
 			self.getSelectionCoords = function(win) {
 				win = win || window;
