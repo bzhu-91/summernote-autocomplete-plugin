@@ -29,8 +29,7 @@
 		var editor = $(".summernote").summernote();
 		editor.summernote('autoComplete.setDataSrc', function (keyword, callback) {
 			callback(search(keyword));
-		});
-		editor.summernote('autoComplete.setTriggerSymbol', '#');
+		}, "#");
 		editor.summernote('autoComplete.on', 'insertSuggestion', function(suggestion) {
 			console.log("The uesr has get the suggestion:" + suggestion);
 		})
